@@ -7,9 +7,10 @@ import java.util.function.Predicate;
 
 public class HelpRequestParser implements RequestHelper {
 
-    private final String[] args;
+    private String[] args;
     private final String initialMessage = "help";
     private final boolean isHelpRequest = true;
+    private final boolean isVerbose = false;
 
     public HelpRequestParser(String[] args) {
         this.args = args;
@@ -25,9 +26,14 @@ public class HelpRequestParser implements RequestHelper {
             secondArgument = getSecondArgument();
         }
 
-        request = request + secondArgument;
+        request = request + " " + secondArgument;
+        request = request.trim();
 
-        return new Message(isHelpRequest, request);
+        return new Message(isHelpRequest, isVerbose, request);
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
     }
 
     private boolean secondArgumentPresent() {

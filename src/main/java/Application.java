@@ -5,7 +5,7 @@ public class Application {
 
     private Parser parser;
 
-    public Application( Parser parser) {
+    public Application(Parser parser) {
         this.parser = parser;
     }
 

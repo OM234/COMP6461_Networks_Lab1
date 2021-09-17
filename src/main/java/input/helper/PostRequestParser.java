@@ -4,7 +4,7 @@ import message.Message;
 
 public class PostRequestParser implements RequestHelper {
 
-    private final String[] args;
+    private String[] args;
 
     public PostRequestParser(String[] args) {
         this.args = args;
@@ -14,4 +14,8 @@ public class PostRequestParser implements RequestHelper {
     public Message getRequest() {
         return null;
     }
-}
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+

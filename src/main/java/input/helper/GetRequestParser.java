@@ -4,9 +4,14 @@ import message.Message;
 
 public class GetRequestParser implements RequestHelper {
 
-    private final String[] args;
+    private String[] args;
+    private boolean isVerbose;
 
     public GetRequestParser(String[] args) {
+        this.args = args;
+    }
+
+    public void setArgs(String[] args) {
         this.args = args;
     }
 
