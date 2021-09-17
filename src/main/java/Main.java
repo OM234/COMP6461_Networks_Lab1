@@ -1,15 +1,8 @@
 
 
-import input.GetPostRequestParser;
-import input.HelpRequestParser;
+import input.helper.GetPostRequestParser;
+import input.helper.HelpRequestParser;
 import input.Parser;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-
-import static java.util.Arrays.asList;
 
 public class Main {
 
@@ -22,7 +15,7 @@ public class Main {
 //    }
 
     public static void main(String[] args) {
-        Parser parser = new Parser(args, new HelpRequestParser(), new GetPostRequestParser());
+        Parser parser = new Parser(args, new HelpRequestParser(args), new GetPostRequestParser(args));
         Application application = new Application(parser);
         application.makeRequest();
 

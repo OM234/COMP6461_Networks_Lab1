@@ -1,5 +1,8 @@
 package input;
 
+import input.helper.RequestHelper;
+import message.Message;
+
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -7,23 +10,27 @@ import java.util.function.Predicate;
 public class Parser {
 
     private final String[] args;
-    private final HelpRequestParser helpRequestParser;
-    private final GetPostRequestParser getPostRequestParser;
+    private final RequestHelper helpRequestParser;
+    private final RequestHelper getPostRequestParser;
     private RequestType requestType;
 
-    public Parser(String[] args, HelpRequestParser helpRequestParser, GetPostRequestParser getPostRequestParser) {
+    public Parser(String[] args, RequestHelper helpRequestParser, RequestHelper getPostRequestParser) {
         this.args = args;
         this.helpRequestParser = helpRequestParser;
         this.getPostRequestParser = getPostRequestParser;
     }
 
-    public String getRequest() {
+    public Message getRequest() {
+        Message request;
+
         verifyInitialArg();
         setRequestType();
-        return "";
+        request = getRequestFromHelperParsers();
+
+        return request;
     }
 
-    public void verifyInitialArg() {
+    private void verifyInitialArg() {
         boolean valid = verifyMinimumLength() && verifyFirstArgumentGetOrPostorHelp();
         if(!valid) {
             throw new IllegalArgumentException("first argument incorrect");
@@ -36,7 +43,6 @@ public class Parser {
 
     private boolean verifyFirstArgumentGetOrPostorHelp() {
         String initialArg = args[0];
-
         return Arrays.stream(RequestType.values())
                 .anyMatch(initialArgEqualsARequestType(initialArg));
     }
@@ -47,7 +53,6 @@ public class Parser {
 
     private void setRequestType() {
         String initialArg = args[0];
-
         Arrays.stream(RequestType.values())
                 .filter(initialArgEqualsARequestType(initialArg))
                 .findAny()
@@ -56,6 +61,19 @@ public class Parser {
 
     private Consumer<RequestType> setRequestTypeConsumer() {
         return requestType -> this.requestType = requestType;
+    }
+
+
+    private Message getRequestFromHelperParsers() {
+        Message request;
+        if(requestType.equals(RequestType.HELP)) {
+            request = helpRequestParser.getRequest();
+        } else if (requestType.equals(RequestType.GET) || requestType.equals(RequestType.POST)){
+            request = getPostRequestParser.getRequest();
+        } else {
+            throw new IllegalArgumentException("no request helper defined");
+        }
+        return request;
     }
 
     private RequestType getRequestType() {

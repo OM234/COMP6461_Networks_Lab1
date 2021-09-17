@@ -1,4 +1,5 @@
 import input.Parser;
+import message.Message;
 
 public class Application {
 
@@ -9,6 +10,6 @@ public class Application {
     }
 
     public void makeRequest() {
-        String request = parser.getRequest();
+        Message request = parser.getRequest();
     }
 }
