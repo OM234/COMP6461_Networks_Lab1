@@ -11,13 +11,18 @@ public class Parser {
 
     private final String[] args;
     private final RequestHelper helpRequestParser;
-    private final RequestHelper getPostRequestParser;
+    private final RequestHelper getRequestParser;
+    private final RequestHelper postRequestParser;
     private RequestType requestType;
 
-    public Parser(String[] args, RequestHelper helpRequestParser, RequestHelper getPostRequestParser) {
+    public Parser(String[] args,
+                  RequestHelper helpRequestParser,
+                  RequestHelper getRequestParser,
+                  RequestHelper postRequestParser) {
         this.args = args;
         this.helpRequestParser = helpRequestParser;
-        this.getPostRequestParser = getPostRequestParser;
+        this.getRequestParser = getRequestParser;
+        this.postRequestParser = postRequestParser;
     }
 
     public Message getRequest() {
@@ -63,13 +68,14 @@ public class Parser {
         return requestType -> this.requestType = requestType;
     }
 
-
     private Message getRequestFromHelperParsers() {
         Message request;
         if(requestType.equals(RequestType.HELP)) {
             request = helpRequestParser.getRequest();
-        } else if (requestType.equals(RequestType.GET) || requestType.equals(RequestType.POST)){
-            request = getPostRequestParser.getRequest();
+        } else if (requestType.equals(RequestType.GET)) {
+            request = getRequestParser.getRequest();
+        } else if (requestType.equals(RequestType.POST)) {
+            request = postRequestParser.getRequest();
         } else {
             throw new IllegalArgumentException("no request helper defined");
         }

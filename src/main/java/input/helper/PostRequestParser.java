@@ -2,11 +2,11 @@ package input.helper;
 
 import message.Message;
 
-public class GetPostRequestParser implements RequestHelper {
+public class PostRequestParser implements RequestHelper {
 
     private final String[] args;
 
-    public GetPostRequestParser(String[] args) {
+    public PostRequestParser(String[] args) {
         this.args = args;
     }
 
