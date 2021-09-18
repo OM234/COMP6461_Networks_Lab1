@@ -7,7 +7,6 @@ public class Presenter {
     }
 
     private void printToFile(String output) {
-
     }
 
 }

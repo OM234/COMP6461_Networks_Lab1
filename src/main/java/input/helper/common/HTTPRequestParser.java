@@ -1,5 +1,7 @@
 package input.helper.common;
 
+import message.RequestMessage;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.AbstractMap;
@@ -35,7 +37,7 @@ public abstract class HTTPRequestParser {
         }
     }
 
-    protected boolean arguementIsDorF(String arg) {
+    protected boolean argumentIsDorF(String arg) {
         return arg.equalsIgnoreCase("-d") || arg.equalsIgnoreCase("-f");
     }
 
@@ -84,34 +86,31 @@ public abstract class HTTPRequestParser {
         throw new IllegalArgumentException();
     }
 
-    protected void initializeURLString() {
-        getURLFromLastArg();
-        removeOuterURLQuotes();
-    }
-
-    private void getURLFromLastArg() {
+    protected void getURLFromLastArg() {
         this.URLString = args[args.length - 1];
     }
 
-    private void removeOuterURLQuotes() {
+    protected void removeOuterURLQuotes() {
         this.URLString = this.URLString.substring(1, this.URLString.length()-1);
     }
 
-    protected void addMethodToRequest(MethodsAccepted method) {
+    protected void addMethodAndHostToRequest(MethodsAccepted method) {
         requestString += method + " " + URL.getFile() + " HTTP/1.1\n" +
                 "Host: " + URL.getHost() + "\n";
     }
 
     protected void addHeadersToRequest() {
         headers.forEach((key, value) -> {
-            this.requestString += key + ":";
+            this.requestString += key + ": ";
             this.requestString += value + "\n";
         });
     }
 
-    protected void addFinalNewLineToRequest() {
+    protected void addRequiredNewLineToRequest() {
         requestString += "\n";
     }
+
+    protected abstract RequestMessage createHttpRequestLine();
 
     protected enum MethodsAccepted {
         GET, POST

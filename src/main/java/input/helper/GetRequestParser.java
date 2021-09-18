@@ -16,32 +16,34 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         super.setIsVerbose();
         verifyNoDorFArguments();
         super.initializeHeaders();
-        super.initializeURLString();
+        initializeURLString();
         return createHttpRequestLine();
     }
 
     private void verifyNoDorFArguments() {
         Arrays.stream(super.args)
-                .filter(super::arguementIsDorF)
+                .filter(super::argumentIsDorF)
                 .findAny()
                 .ifPresent(badArgument -> {
                     throw new IllegalArgumentException("no -d or -f argument for get");
                 });
     }
 
-    private RequestMessage createHttpRequestLine() {
+    private void initializeURLString() {
+        getURLFromLastArg();
+        super.removeOuterURLQuotes();
+    }
+
+    @Override
+    protected RequestMessage createHttpRequestLine() {
         RequestMessage message;
 
         super.tryToInitializeURL();
-        super.addMethodToRequest(MethodsAccepted.GET);
+        super.addMethodAndHostToRequest(MethodsAccepted.GET);
         super.addHeadersToRequest();
-        super.addFinalNewLineToRequest();
+        super.addRequiredNewLineToRequest();
 
         message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString);
         return message;
     }
-
-
-
-
 }
