@@ -1,6 +1,6 @@
 package input.helper;
 
-import message.Message;
+import message.RequestMessage;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -17,7 +17,7 @@ public class HelpRequestParser implements RequestHelper {
     }
 
     @Override
-    public Message getRequest() {
+    public RequestMessage getRequest() {
         String request = this.initialMessage;
         String secondArgument = "";
 
@@ -29,7 +29,7 @@ public class HelpRequestParser implements RequestHelper {
         request = request + " " + secondArgument;
         request = request.trim();
 
-        return new Message(isHelpRequest, isVerbose, request);
+        return new RequestMessage(isHelpRequest, isVerbose, request);
     }
 
     public void setArgs(String[] args) {

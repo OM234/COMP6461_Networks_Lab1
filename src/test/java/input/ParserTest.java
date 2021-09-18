@@ -3,7 +3,7 @@ package input;
 import input.helper.GetRequestParser;
 import input.helper.HelpRequestParser;
 import input.helper.PostRequestParser;
-import message.Message;
+import message.RequestMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +14,8 @@ class ParserTest {
     private HelpRequestParser helpRequestParser;
     private GetRequestParser getRequestParser;
     private PostRequestParser postRequestParser;
+    private final String expectedGetString1 = "GET /get?course=networking&assignment=1 HTTP/1.1\n"
+            + "Host: " + "httpbin.org" + "\n\n";
 
     @BeforeEach
     void setup() {
@@ -25,47 +27,60 @@ class ParserTest {
     @Test
     void verifyValidHelpRequestNoArgs() {
         String args[] = {"help"};
-        Message message;
+        RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        message = parser.getRequest();
+        requestMessage = parser.getRequest();
 
-        assertTrue(message.isHelpRequest());
-        assertEquals("help", message.getMessage());
+        assertTrue(requestMessage.isHelpRequest());
+        assertEquals("help", requestMessage.getMessage());
     }
 
     @Test
     void verifyValidHelpRequestWithGet() {
         String args[] = {"help", "get"};
-        Message message;
+        RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        message = parser.getRequest();
+        requestMessage = parser.getRequest();
 
-        assertTrue(message.isHelpRequest());
-        assertEquals("help get", message.getMessage());
+        assertTrue(requestMessage.isHelpRequest());
+        assertEquals("help get", requestMessage.getMessage());
     }
 
     @Test
     void verifyValidHelpRequestWithPost() {
         String args[] = {"help", "post"};
-        Message message;
+        RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        message = parser.getRequest();
+        requestMessage = parser.getRequest();
 
-        assertTrue(message.isHelpRequest());
-        assertEquals("help post", message.getMessage());
+        assertTrue(requestMessage.isHelpRequest());
+        assertEquals("help post", requestMessage.getMessage());
     }
 
     @Test
     void verifyInvalidHelpRequestThrowsException() {
         String args[] = {"help", "something_other_than_get_or_post_for_now"};
-        Message message;
+        RequestMessage requestMessage;
         Parser parser = getParser(args);
 
         assertThrows(IllegalArgumentException.class, parser::getRequest);
     }
+
+    @Test
+    void verifyValidGetRequest1() {
+        String[] args = {"get", "'http://httpbin.org/get?course=networking&assignment=1'"};
+        RequestMessage requestMessage;
+        Parser parser = getParser(args);
+
+        requestMessage = parser.getRequest();
+
+        assertEquals(expectedGetString1, requestMessage.getMessage());
+        System.out.println();
+    }
+
 
     private Parser getParser(String[] args) {
         initializeHelpers(args);

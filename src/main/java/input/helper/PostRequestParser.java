@@ -1,6 +1,6 @@
 package input.helper;
 
-import message.Message;
+import message.RequestMessage;
 
 public class PostRequestParser implements RequestHelper {
 
@@ -11,11 +11,12 @@ public class PostRequestParser implements RequestHelper {
     }
 
     @Override
-    public Message getRequest() {
+    public RequestMessage getRequest() {
         return null;
     }
 
     public void setArgs(String[] args) {
         this.args = args;
     }
+}
 

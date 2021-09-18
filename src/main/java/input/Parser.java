@@ -1,7 +1,7 @@
 package input;
 
 import input.helper.RequestHelper;
-import message.Message;
+import message.RequestMessage;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -25,8 +25,8 @@ public class Parser {
         this.postRequestParser = postRequestParser;
     }
 
-    public Message getRequest() {
-        Message request;
+    public RequestMessage getRequest() {
+        RequestMessage request;
 
         verifyInitialArg();
         setRequestType();
@@ -68,8 +68,8 @@ public class Parser {
         return requestType -> this.requestType = requestType;
     }
 
-    private Message getRequestFromHelperParsers() {
-        Message request;
+    private RequestMessage getRequestFromHelperParsers() {
+        RequestMessage request;
         if(requestType.equals(RequestType.HELP)) {
             request = helpRequestParser.getRequest();
         } else if (requestType.equals(RequestType.GET)) {

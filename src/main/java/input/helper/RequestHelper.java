@@ -1,7 +1,7 @@
 package input.helper;
 
-import message.Message;
+import message.RequestMessage;
 
 public interface RequestHelper {
-    Message getRequest();
+    RequestMessage getRequest();
 }
