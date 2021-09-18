@@ -43,7 +43,7 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         super.addHeadersToRequest();
         super.addRequiredNewLineToRequest();
 
-        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString);
+        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString, super.URL.getHost());
         return message;
     }
 }

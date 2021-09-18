@@ -109,7 +109,7 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
         super.addRequiredNewLineToRequest();
         addBodyToRequest();
 
-        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString);
+        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString, super.URL.getHost());
         return message;
     }
 

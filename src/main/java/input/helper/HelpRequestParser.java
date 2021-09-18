@@ -8,28 +8,25 @@ import java.util.function.Predicate;
 public class HelpRequestParser implements RequestHelper {
 
     private String[] args;
+    private String request;
+    private String secondArgument = "";
     private final String initialMessage = "help";
     private final boolean isHelpRequest = true;
     private final boolean isVerbose = false;
 
     public HelpRequestParser(String[] args) {
         this.args = args;
+        request = initialMessage;
     }
 
     @Override
     public RequestMessage getRequest() {
-        String request = this.initialMessage;
-        String secondArgument = "";
-
         if(secondArgumentPresent()) {
             verifySecondArgument();
-            secondArgument = getSecondArgument();
+            setSecondArgument();
         }
-
-        request = request + " " + secondArgument;
-        request = request.trim();
-
-        return new RequestMessage(isHelpRequest, isVerbose, request);
+        appendSecondArgToRequest();
+        return new RequestMessage(isHelpRequest, isVerbose, request, "");
     }
 
     public void setArgs(String[] args) {
@@ -40,8 +37,8 @@ public class HelpRequestParser implements RequestHelper {
         return args.length > 1;
     }
 
-    private String getSecondArgument() {
-        return Arrays.stream(HelpTopics.values())
+    private void setSecondArgument() {
+        secondArgument = Arrays.stream(HelpTopics.values())
                 .filter(helpArgumentMatchesHelpTopic())
                 .findAny()
                 .get()
@@ -60,7 +57,12 @@ public class HelpRequestParser implements RequestHelper {
         return helpTopic -> args[1].equalsIgnoreCase(helpTopic.toString());
     }
 
-    private enum HelpTopics {
+    private void appendSecondArgToRequest() {
+        request = request + " " + secondArgument;
+        request = request.trim();
+    }
+
+    public enum HelpTopics {
         GET, POST
     }
 }

@@ -4,6 +4,8 @@ import input.helper.GetRequestParser;
 import input.helper.HelpRequestParser;
 import input.Parser;
 import input.helper.PostRequestParser;
+import output.HelpPresenter;
+import output.Presenter;
 
 public class Main {
 
@@ -17,8 +19,10 @@ public class Main {
 
     public static void main(String[] args) {
         Parser parser = new Parser(args, new HelpRequestParser(args), new GetRequestParser(args), new PostRequestParser(args));
-        Application application = new Application(parser);
-        application.makeRequest();
+        HelpPresenter helpPresenter = new HelpPresenter();
+        Presenter presenter = new Presenter(helpPresenter);
+        Application application = new Application(parser, presenter);
+        application.start();
 
 //        setArgs(args);
 //        createEndpointAndRunClient();
