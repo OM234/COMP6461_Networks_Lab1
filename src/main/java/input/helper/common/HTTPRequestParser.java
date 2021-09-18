@@ -1,0 +1,119 @@
+package input.helper.common;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+public abstract class HTTPRequestParser {
+
+    protected String[] args;
+    protected boolean isVerbose = false;
+    protected final boolean isHelpRequest = false;
+    protected Map<String, String> headers = new HashMap<>();
+    protected String URLString;
+    protected java.net.URL URL;
+    protected String requestString = "";
+
+    public HTTPRequestParser(String[] args) {
+        this.args = args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    protected void setIsVerbose() {
+        if (args[1].equalsIgnoreCase("-v")) {
+            isVerbose = true;
+        }
+    }
+
+    protected boolean arguementIsDorF(String arg) {
+        return arg.equalsIgnoreCase("-d") || arg.equalsIgnoreCase("-f");
+    }
+
+    protected void initializeHeaders() {
+        headers = IntStream.range(0, args.length - 1)
+                .filter(argumentIsHeader())
+                .mapToObj(mapKeyValToMapEntry())
+                .collect(mapEntriesToHashMap());
+    }
+
+    private IntPredicate argumentIsHeader() {
+        return index -> args[index].equalsIgnoreCase("-h");
+    }
+
+    private IntFunction<AbstractMap.SimpleImmutableEntry<String, String>> mapKeyValToMapEntry() {
+        return index -> {
+            String[] keyValArray = splitKeyValIntoArray(args[index + 1]);
+            String key = keyValArray[0];
+            String val = keyValArray[1];
+            return new AbstractMap.SimpleImmutableEntry<>(key, val);
+        };
+    }
+
+    private String[] splitKeyValIntoArray(String keyVal) {
+        return keyVal.split(":");
+    }
+
+    private Collector<AbstractMap.SimpleImmutableEntry<String, String>, ?, Map<String, String>> mapEntriesToHashMap() {
+        return Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue);
+    }
+
+    protected void tryToInitializeURL() {
+        try {
+            initializeURL();
+        } catch (MalformedURLException e) {
+            handleMalformedURL(e);
+        }
+    }
+
+    private void initializeURL() throws MalformedURLException {
+        URL = new URL(this.URLString);
+    }
+
+    private void handleMalformedURL(MalformedURLException e) {
+        System.out.println(e);
+        throw new IllegalArgumentException();
+    }
+
+    protected void initializeURLString() {
+        getURLFromLastArg();
+        removeOuterURLQuotes();
+    }
+
+    private void getURLFromLastArg() {
+        this.URLString = args[args.length - 1];
+    }
+
+    private void removeOuterURLQuotes() {
+        this.URLString = this.URLString.substring(1, this.URLString.length()-1);
+    }
+
+    protected void addMethodToRequest(MethodsAccepted method) {
+        requestString += method + " " + URL.getFile() + " HTTP/1.1\n" +
+                "Host: " + URL.getHost() + "\n";
+    }
+
+    protected void addHeadersToRequest() {
+        headers.forEach((key, value) -> {
+            this.requestString += key + ":";
+            this.requestString += value + "\n";
+        });
+    }
+
+    protected void addFinalNewLineToRequest() {
+        requestString += "\n";
+    }
+
+    protected enum MethodsAccepted {
+        GET, POST
+    }
+}

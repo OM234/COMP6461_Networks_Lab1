@@ -16,6 +16,8 @@ class ParserTest {
     private PostRequestParser postRequestParser;
     private final String expectedGetString1 = "GET /get?course=networking&assignment=1 HTTP/1.1\n"
             + "Host: " + "httpbin.org" + "\n\n";
+    private final String expectedGetStringWithParameters = "GET /get?course=networking&assignment=1 HTTP/1.1\n"
+            + "Host: " + "httpbin.org\n" +  "anotherkey: anothervalue\n" + "Accept: application/json" + "\n\n";
 
     @BeforeEach
     void setup() {
@@ -81,6 +83,19 @@ class ParserTest {
         System.out.println();
     }
 
+
+    @Test
+    void verifyValidGetRequestWithHeaders() {
+        String[] args = {"get", "-h", "Accept: application/json", "-h", "anotherkey: anothervalue",  "'http://httpbin.org/get?course=networking&assignment=1'"};
+
+        RequestMessage requestMessage;
+        Parser parser = getParser(args);
+
+        requestMessage = parser.getRequest();
+
+        assertEquals(expectedGetStringWithParameters, requestMessage.getMessage());
+        System.out.println();
+    }
 
     private Parser getParser(String[] args) {
         initializeHelpers(args);
