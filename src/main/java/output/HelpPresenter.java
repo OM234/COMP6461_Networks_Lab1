@@ -33,7 +33,7 @@ public class HelpPresenter {
 
     private void printHelpRequestText(String message) {
         if (isGenericHelpMessage()) {
-            setOutputGenericHelpMessage();
+            setOutputToGenericMessage();
         } else {
             setOutputMethodSpecificHelpMessage();
         }
@@ -42,10 +42,6 @@ public class HelpPresenter {
 
     private boolean isGenericHelpMessage() {
         return messageArray.length == 1;
-    }
-
-    private void setOutputGenericHelpMessage() {
-        setOutputToGenericMessage();
     }
 
     private void setOutputToGenericMessage() {
