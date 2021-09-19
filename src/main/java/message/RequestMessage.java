@@ -2,14 +2,13 @@ package message;
 
 public class RequestMessage {
     private final boolean isHelpRequest;
-    private final boolean verbose;
+    private final boolean isVerbose;
     private final String message;
     private final String hostName;
-    private String HttpResponse;
 
-    public RequestMessage(boolean isHelpRequest, boolean verbose, String message, String hostName) {
+    public RequestMessage(boolean isHelpRequest, boolean isVerbose, String message, String hostName) {
         this.isHelpRequest = isHelpRequest;
-        this.verbose = verbose;
+        this.isVerbose = isVerbose;
         this.message = message;
         this.hostName = hostName;
     }
@@ -26,11 +25,7 @@ public class RequestMessage {
         return this.hostName;
     }
 
-    public String getHttpResponse() {
-        return HttpResponse;
-    }
-
-    public void setHttpResponse(String httpResponse) {
-        HttpResponse = httpResponse;
+    public boolean getIsVerbose() {
+        return this.isVerbose;
     }
 }

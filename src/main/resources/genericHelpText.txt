@@ -7,3 +7,30 @@ The commands are:
     help prints this screen.
 
 Use "httpc help [command]" for more information about a command.
+
+HTTP/1.1 200 OK
+Date: Sun, 19 Sep 2021 03:28:33 GMT
+Content-Type: application/json
+Content-Length: 371
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {},
+  "data": "{\"Assignment\": 1}",
+  "files": {},
+  "form": {},
+  "headers": {
+    "Content-Length": "17",
+    "Content-Type": "application/json",
+    "Host": "httpbin.org",
+    "X-Amzn-Trace-Id": "Root=1-6146ae61-0dcbfc5669cce33f69be6c78"
+  },
+  "json": {
+    "Assignment": 1
+  },
+  "origin": "37.19.211.18",
+  "url": "http://httpbin.org/post"
+}

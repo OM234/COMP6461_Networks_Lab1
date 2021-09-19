@@ -1,5 +1,6 @@
 package client;
 
+import message.HTTPResponse;
 import message.RequestMessage;
 
 import java.io.IOException;
@@ -13,16 +14,17 @@ public class HttpClient {
 
     private RequestMessage request;
 
-    public String makeRequest(RequestMessage request) {
+    public HTTPResponse makeRequest(RequestMessage request) {
         setRequest(request);
         try(SocketChannel socket = SocketChannel.open()) {
             return tryToMakeHTTPRequest(socket);
         } catch (IOException e) {
-            return handleHTTPerror(e);
+            handleHTTPError(e);
+            throw new RuntimeException();
         }
     }
 
-    private String tryToMakeHTTPRequest(SocketChannel socket) throws IOException {
+    private HTTPResponse tryToMakeHTTPRequest(SocketChannel socket) throws IOException {
         connectToHost(socket);
         writeToSocket(socket);
         return readResponse(socket);
@@ -40,14 +42,14 @@ public class HttpClient {
         socket.write(ByteBuffer.wrap(this.request.getMessage().getBytes(StandardCharsets.UTF_8)));
     }
 
-    private String readResponse(SocketChannel socket) throws IOException {
+    private HTTPResponse readResponse(SocketChannel socket) throws IOException {
         ByteBuffer bf = ByteBuffer.allocate(10000);
         byte[] bytesWithoutNullBytes;
 
         readFromSocketIntoByteBuffer(socket, bf);
         bytesWithoutNullBytes = removeNullBytes(bf);
         
-        return convertByteToString(bytesWithoutNullBytes);
+        return convertByteToHTTPReponseObject(bytesWithoutNullBytes);
     }
 
     private void readFromSocketIntoByteBuffer(SocketChannel socket, ByteBuffer bf) throws IOException {
@@ -64,13 +66,13 @@ public class HttpClient {
         return Arrays.copyOf(bytes, i + 1);
     }
 
-    private String convertByteToString(byte[] bytesWithoutNullBytes) {
-        return new String(bytesWithoutNullBytes);
+    private HTTPResponse convertByteToHTTPReponseObject(byte[] bytesWithoutNullBytes) {
+        String response =  new String(bytesWithoutNullBytes);
+        return new HTTPResponse(response, this.request.getIsVerbose());
     }
 
-    private String handleHTTPerror(IOException e) {
+    private void handleHTTPError(IOException e) {
         e.printStackTrace();
         System.out.println("error when making HTTP request");
-        throw new RuntimeException();
     }
 }

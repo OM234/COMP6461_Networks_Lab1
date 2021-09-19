@@ -1,5 +1,6 @@
 import client.HttpClient;
 import input.Parser;
+import message.HTTPResponse;
 import message.RequestMessage;
 import output.Presenter;
 
@@ -30,7 +31,8 @@ public class Application {
         if(request.isHelpRequest()) {
             presenter.printHelpRequest(request);
         } else {
-            httpClient.makeRequest(request);
+            HTTPResponse response = httpClient.makeRequest(request);
+            presenter.printToScreen(response.getHttpResponse());
         }
     }
 }

@@ -1,5 +1,3 @@
-
-
 import client.HttpClient;
 import input.helper.GetRequestParser;
 import input.helper.HelpRequestParser;
@@ -23,7 +21,6 @@ public class Main {
         HttpClient httpClient = new HttpClient();
         Application application = new Application(parser, presenter, httpClient);
         application.start();
-
     }
 
     public static String[] concatenateArgs(String args[]) {

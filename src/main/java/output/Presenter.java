@@ -10,8 +10,8 @@ public class Presenter {
         this.helpPresenter = helpPresenter;
     }
 
-    public void printToScreen(String totalOutput) {
-        System.out.println(totalOutput);
+    public void printToScreen(String output) {
+        System.out.println(output);
     }
 
     private void printToFile(String output) {
