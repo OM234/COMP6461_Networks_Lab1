@@ -1,5 +1,6 @@
 
 
+import client.HttpClient;
 import input.helper.GetRequestParser;
 import input.helper.HelpRequestParser;
 import input.Parser;
@@ -7,61 +8,57 @@ import input.helper.PostRequestParser;
 import output.HelpPresenter;
 import output.Presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
-//    private Parser parser;
-//    private static String[] args;
-//   //private static OptionParser parser;
-//
-//    static {
-//        parser = getArgParser();
-//    }
-
     public static void main(String[] args) {
+        args = concatenateArgs(args);
+        addInDoubleQuotes(args);
+
         Parser parser = new Parser(args, new HelpRequestParser(args), new GetRequestParser(args), new PostRequestParser(args));
         HelpPresenter helpPresenter = new HelpPresenter();
         Presenter presenter = new Presenter(helpPresenter);
-        Application application = new Application(parser, presenter);
+        HttpClient httpClient = new HttpClient();
+        Application application = new Application(parser, presenter, httpClient);
         application.start();
 
-//        setArgs(args);
-//        createEndpointAndRunClient();
     }
 
-//    private static void setArgs(String[] args) {
-//        Main.args = args;
-//    }
-//
-//    private static void createEndpointAndRunClient() {
-//        SocketAddress endPoint = createEndPoint();
-//        runClient(endPoint);
-//    }
-//
-//    private static SocketAddress createEndPoint() {
-//        OptionSet opts;
-//        String host;
-//        int port;
-//        SocketAddress endpoint;
-//
-//        opts = parser.parse(args);
-//        host = (String) opts.valueOf("host");
-//        port = Integer.parseInt((String) opts.valueOf("port"));
-//        endpoint = new InetSocketAddress(host, port);
-//
-//        return endpoint;
-//    }
-//
-//    private static OptionParser getArgParser() {
-//        OptionParser parser = new OptionParser();
-//        parser.acceptsAll(asList("host", "h"), "EchoServer hostname")
-//                .withOptionalArg()
-//                .defaultsTo("localhost");
-//        parser.acceptsAll(asList("port", "p"), "EchoServer listening port")
-//                .withOptionalArg()
-//                .defaultsTo("8007");
-//        return parser;
-//    }
-//
-//    private static void runClient(SocketAddress endPoint) {
-//    }
+    public static String[] concatenateArgs(String args[]) {
+        List<String> newArgs = new ArrayList<>();
+        int i = 0;
+        while(i < args.length) {
+            if(args[i].contains("'")) {
+                String curr = args[i];
+                i++;
+                while(i < args.length && args[i].contains("'")) {
+                    curr += " " + args[i];
+                    i++;
+                }
+                newArgs.add(curr);
+            } else {
+                newArgs.add(args[i]);
+                i++;
+            }
+        }
+        String[] newArr = new String[newArgs.size()];
+        return newArgs.toArray(newArr);
+    }
+
+    private static void addInDoubleQuotes(String[] args) {
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].contains("{")) {
+                int leftParanIndex = args[i].indexOf("{");
+                int colonIndex = args[i].indexOf(":");
+
+                String argWithQuotes = args[i].substring(0, leftParanIndex+1) + "\"";
+                argWithQuotes += args[i].substring(leftParanIndex+1, colonIndex) + "\"";
+                argWithQuotes += args[i].substring(colonIndex);
+
+                args[i] = argWithQuotes;
+            }
+        }
+    }
 }

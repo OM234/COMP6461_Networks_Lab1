@@ -5,6 +5,7 @@ public class RequestMessage {
     private final boolean verbose;
     private final String message;
     private final String hostName;
+    private String HttpResponse;
 
     public RequestMessage(boolean isHelpRequest, boolean verbose, String message, String hostName) {
         this.isHelpRequest = isHelpRequest;
@@ -19,5 +20,17 @@ public class RequestMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getHostName() {
+        return this.hostName;
+    }
+
+    public String getHttpResponse() {
+        return HttpResponse;
+    }
+
+    public void setHttpResponse(String httpResponse) {
+        HttpResponse = httpResponse;
     }
 }

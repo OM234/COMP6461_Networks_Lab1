@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class HelpPresenter {
 
@@ -69,21 +71,26 @@ public class HelpPresenter {
     private void setOutputMethodSpecificHelpMessage() {
         String secondArgument = messageArray[1];
         HelpRequestParser.HelpTopics helpTopic = initializeHelpTopic(secondArgument);
-        chooseAppropriatePrintOutptuForHelpTopic(helpTopic);
+        chooseAppropriatePrintOutputForHelpTopic(helpTopic);
     }
 
     private HelpRequestParser.HelpTopics initializeHelpTopic(String secondArgument) {
         return Arrays.stream(HelpRequestParser.HelpTopics.values())
-                .filter(topic -> secondArgument.equalsIgnoreCase(topic.toString()))
+                .filter(secondArgumentEqualsAHelpTopic(secondArgument))
                 .findAny()
-                .orElseThrow(() -> throwHelpTopicDoesNotExistException());
+                .orElseThrow(throwHelpTopicDoesNotExistException());
     }
 
-    private IllegalArgumentException throwHelpTopicDoesNotExistException() {
-        return new IllegalArgumentException("help topic does not exist");
+    private Predicate<HelpRequestParser.HelpTopics> secondArgumentEqualsAHelpTopic(String secondArgument) {
+        return topic -> secondArgument.equalsIgnoreCase(topic.toString());
     }
 
-    private void chooseAppropriatePrintOutptuForHelpTopic(HelpRequestParser.HelpTopics helpTopic) {
+    private Supplier<IllegalArgumentException> throwHelpTopicDoesNotExistException() {
+        return () -> new IllegalArgumentException("help topic does not exist");
+    }
+
+
+    private void chooseAppropriatePrintOutputForHelpTopic(HelpRequestParser.HelpTopics helpTopic) {
         if(helpTopic.equals(HelpRequestParser.HelpTopics.GET)) {
             setGetRequestOutput();
         } else if (helpTopic.equals(HelpRequestParser.HelpTopics.POST)) {
