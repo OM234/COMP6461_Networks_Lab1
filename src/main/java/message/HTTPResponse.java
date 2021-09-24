@@ -8,11 +8,13 @@ public class HTTPResponse {
 
     private final String fullHTTPResponse;
     private final boolean isVerbose;
+    private final RequestMessage requestMessage;
     private String httpResponse;
 
-    public HTTPResponse(String httpResponse, boolean isVerbose) {
+    public HTTPResponse(String httpResponse, RequestMessage requestMessage) {
         this.fullHTTPResponse = httpResponse;
-        this.isVerbose = isVerbose;
+        this.isVerbose = requestMessage.getIsVerbose();
+        this.requestMessage = requestMessage;
         setHTTPResponse();
     }
 
@@ -46,5 +48,17 @@ public class HTTPResponse {
 
     public String getFullHTTPResponse() {
         return this.fullHTTPResponse;
+    }
+
+    public boolean isPrintToFile() {
+        return requestMessage.isPrintToFile();
+    }
+
+    public String getFilePath() {
+        return requestMessage.getOutputFilePath();
+    }
+
+    public int getURLIndex() {
+        return requestMessage.getURLIndex();
     }
 }

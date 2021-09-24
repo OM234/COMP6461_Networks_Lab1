@@ -28,7 +28,7 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
     }
 
     private void initializeURLString() {
-        getURLFromLastArg();
+        getURLFromArgs();
         super.removeOuterURLQuotes();
     }
 
@@ -41,7 +41,8 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         super.addHeadersToRequest();
         super.addRequiredNewLineToRequest();
 
-        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString, super.URL.getHost());
+        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString,
+                super.URL.getHost(), super.URLIndex);
         return message;
     }
 }

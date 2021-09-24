@@ -20,6 +20,7 @@ public abstract class HTTPRequestParser {
     protected final boolean isHelpRequest = false;
     protected Map<String, String> headers = new HashMap<>();
     protected String URLString;
+    protected int URLIndex;
     protected java.net.URL URL;
     protected String requestString = "";
 
@@ -70,6 +71,31 @@ public abstract class HTTPRequestParser {
         return Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue);
     }
 
+    protected void setURLIndex() {
+        this.URLIndex = IntStream.range(0, args.length)
+                .filter(index -> isURLIndexWithoutQuotes(index) || isURLIndexWithQuotes(index))
+                .findFirst()
+                .getAsInt();
+    }
+
+    protected boolean isURLIndexWithQuotes(int index) {
+        try {
+            URL = new URL(args[index].substring(1, args[index].length()-1));
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean isURLIndexWithoutQuotes(int index) {
+        try {
+            URL = new URL(args[index]);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
+    }
+
     protected void tryToInitializeURL() {
         try {
             initializeURL();
@@ -87,8 +113,9 @@ public abstract class HTTPRequestParser {
         throw new IllegalArgumentException();
     }
 
-    protected void getURLFromLastArg() {
-        this.URLString = args[args.length - 1];
+    protected void getURLFromArgs() {
+        setURLIndex();
+        this.URLString = args[URLIndex];
     }
 
     protected void removeOuterURLQuotes() {

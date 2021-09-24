@@ -46,7 +46,7 @@ public class Application {
             presenter.printHelpRequest(request);
         } else {
             HTTPResponse response = httpClient.makeRequest(request);
-            presenter.printToScreen(response.getHttpResponse());
+            presenter.print(response);
             attemptRedirectIfNeeded(response);
         }
     }
@@ -55,12 +55,12 @@ public class Application {
         if(redirector.redirectNecessary(response)){
             System.out.println("***Redirecting***\n\n");
             String newURL = redirector.getRedirectURL(response);
-            setRedirectArg(newURL);
+            setRedirectArg(newURL, response);
             handleRequest();
         }
     }
 
-    private void setRedirectArg(String newURL) {
-        args[args.length-1] = newURL;
+    private void setRedirectArg(String newURL, HTTPResponse response) {
+        args[response.getURLIndex()] = newURL;
     }
 }

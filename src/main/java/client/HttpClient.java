@@ -68,7 +68,7 @@ public class HttpClient {
 
     private HTTPResponse convertByteToHTTPReponseObject(byte[] bytesWithoutNullBytes) {
         String response =  new String(bytesWithoutNullBytes);
-        return new HTTPResponse(response, this.request.getIsVerbose());
+        return new HTTPResponse(response, this.request);
     }
 
     private void handleHTTPError(IOException e) {

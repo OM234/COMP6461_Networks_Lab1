@@ -6,6 +6,8 @@ import message.RequestMessage;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.spi.AbstractResourceBundleProvider;
+import java.util.stream.IntStream;
 
 public class Parser implements RequestHelper{
 
@@ -32,10 +34,10 @@ public class Parser implements RequestHelper{
         verifyInitialArg();
         setRequestType();
         request = getRequestFromHelperParsers();
+        handleToTextOutput(request);
 
         return request;
     }
-
     private void removeHTTPCArg() {
         args = Arrays.copyOfRange(args, 1, args.length);
     }
@@ -85,6 +87,39 @@ public class Parser implements RequestHelper{
             throw new IllegalArgumentException("no request helper defined");
         }
         return request;
+    }
+
+    private void handleToTextOutput(RequestMessage request) {
+        if(hasOutputArgument()) {
+            setRequestOutputData(request);
+        }
+    }
+
+    private boolean hasOutputArgument() {
+        return Arrays.stream(args)
+                .anyMatch(this::isOAarg);
+    }
+
+    private boolean isOAarg(String arg) {
+        return arg.equalsIgnoreCase("-o");
+    }
+
+    private void setRequestOutputData(RequestMessage request) {
+        int filePathArgIndex = getFilePathArgIndex();
+
+        request.setOutputToFile(true);
+        request.setOutputFile(args[filePathArgIndex]);
+    }
+
+    private int getFilePathArgIndex() {
+        return IntStream.range(0, args.length)
+                .filter(index -> oArgIndex(index))
+                .findFirst()
+                .getAsInt() + 1;
+    }
+
+    private boolean oArgIndex(int index) {
+        return isOAarg(args[index]);
     }
 
     private RequestType getRequestType() {
