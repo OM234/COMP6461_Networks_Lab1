@@ -39,19 +39,19 @@ public class clientTest {
         System.out.println(new String(bf.array()));
     }
 
-//    @Test
-//    void aTest3() throws IOException {
-//        SocketChannel socket = SocketChannel.open();
-//        socket.connect(new InetSocketAddress("www.google.com", 80));
-//
-//        String request = "GET / HTTP/1.1\n" + "Host: " + "www.google.com"
-//                + "\n\n";
-//        System.out.println(request);
-//        socket.write(ByteBuffer.wrap(request.getBytes(StandardCharsets.UTF_8)));
-//        ByteBuffer bf = ByteBuffer.allocate(600);
-//        socket.read(bf);
-//        System.out.println(new String(bf.array()));
-//    }
+    @Test
+    void aTest3() throws IOException {
+        SocketChannel socket = SocketChannel.open();
+        socket.connect(new InetSocketAddress("www.google.com", 80));
+
+        String request = "GET / HTTP/1.1\n" + "Host: " + "www.google.com"
+                + "\n\n";
+        System.out.println(request);
+        socket.write(ByteBuffer.wrap(request.getBytes(StandardCharsets.UTF_8)));
+        ByteBuffer bf = ByteBuffer.allocate(600);
+        socket.read(bf);
+        System.out.println(new String(bf.array()));
+    }
 
     @Test
     void test4() throws MalformedURLException {

@@ -1,4 +1,4 @@
-package input.helper.common;
+package input.parser.helper.common;
 
 import message.RequestMessage;
 
@@ -23,12 +23,13 @@ public abstract class HTTPRequestParser {
     protected java.net.URL URL;
     protected String requestString = "";
 
-    public HTTPRequestParser(String[] args) {
+    public void setArgs(String[] args) {
+        resetRequestString();
         this.args = args;
     }
 
-    public void setArgs(String[] args) {
-        this.args = args;
+    private void resetRequestString() {
+        requestString = "";
     }
 
     protected void setIsVerbose() {
@@ -91,11 +92,17 @@ public abstract class HTTPRequestParser {
     }
 
     protected void removeOuterURLQuotes() {
-        this.URLString = this.URLString.substring(1, this.URLString.length()-1);
+        if(outerQuotesPresent()) {
+            this.URLString = this.URLString.substring(1, this.URLString.length() - 1);
+        }
+    }
+
+    private boolean outerQuotesPresent() {
+        return URLString.charAt(0) == '\'';
     }
 
     protected void addMethodAndHostToRequest(MethodsAccepted method) {
-        requestString += method + " " + URL.getFile() + " HTTP/1.1\n" +
+        requestString += method + " " + URL.getFile() + " HTTP/1.0\n" +
                 "Host: " + URL.getHost() + "\n";
     }
 
@@ -111,6 +118,17 @@ public abstract class HTTPRequestParser {
     }
 
     protected abstract RequestMessage createHttpRequestLine();
+
+    protected void verifyNotHTTPSRequest() {
+        if(urlIsHTTPs()){
+            throw new IllegalArgumentException("Cannot perform HTTPs connections");
+        }
+    }
+
+    private boolean urlIsHTTPs() {
+        return this.args[args.length-1].charAt(4) == 's' ||
+                this.args[args.length-1].charAt(5) == 's';
+    }
 
     protected enum MethodsAccepted {
         GET, POST

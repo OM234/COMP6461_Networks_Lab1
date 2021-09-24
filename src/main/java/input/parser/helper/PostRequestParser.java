@@ -1,6 +1,6 @@
-package input.helper;
+package input.parser.helper;
 
-import input.helper.common.HTTPRequestParser;
+import input.parser.helper.common.HTTPRequestParser;
 import message.RequestMessage;
 
 import java.util.Arrays;
@@ -13,16 +13,14 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
 
     private String body = "";
 
-    public PostRequestParser(String[] args) {
-        super(args);
-    }
-
     @Override
-    public RequestMessage getRequest() {
+    public RequestMessage getRequest(String[] args) {
+        setArgs(args);
         super.setIsVerbose();
         verifyOnlyOneDorFArgument();
         super.initializeHeaders();
         initializeURLString();
+        super.verifyNotHTTPSRequest();
         initializeBody();
         addContentLengthToHeader();
         return createHttpRequestLine();

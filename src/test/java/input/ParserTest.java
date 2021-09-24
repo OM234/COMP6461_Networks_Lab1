@@ -1,8 +1,9 @@
 package input;
 
-import input.helper.GetRequestParser;
-import input.helper.HelpRequestParser;
-import input.helper.PostRequestParser;
+import input.parser.helper.GetRequestParser;
+import input.parser.helper.HelpRequestParser;
+import input.parser.helper.PostRequestParser;
+import input.parser.Parser;
 import message.RequestMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,11 @@ class ParserTest {
 
     @Test
     void verifyValidHelpRequestNoArgs() {
-        String args[] = {"help"};
+        String args[] = {"httpc", "help"};
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertTrue(requestMessage.isHelpRequest());
         assertEquals("help", requestMessage.getMessage());
@@ -42,11 +43,11 @@ class ParserTest {
 
     @Test
     void verifyValidHelpRequestWithGet() {
-        String args[] = {"help", "get"};
+        String args[] = {"httpc", "help", "get"};
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertTrue(requestMessage.isHelpRequest());
         assertEquals("help get", requestMessage.getMessage());
@@ -54,11 +55,11 @@ class ParserTest {
 
     @Test
     void verifyValidHelpRequestWithPost() {
-        String args[] = {"help", "post"};
+        String args[] = {"httpc", "help", "post"};
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertTrue(requestMessage.isHelpRequest());
         assertEquals("help post", requestMessage.getMessage());
@@ -66,20 +67,20 @@ class ParserTest {
 
     @Test
     void verifyInvalidHelpRequestThrowsException() {
-        String args[] = {"help", "something_other_than_get_or_post_for_now"};
+        String args[] = {"httpc", "help", "something_other_than_get_or_post_for_now"};
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        assertThrows(IllegalArgumentException.class, parser::getRequest);
+        assertThrows(IllegalArgumentException.class, () -> parser.getRequest(args));
     }
 
     @Test
     void verifyValidGetRequest1() {
-        String[] args = {"get", "'http://httpbin.org/get?course=networking&assignment=1'"};
+        String[] args = {"httpc", "get", "'http://httpbin.org/get?course=networking&assignment=1'"};
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertEquals(expectedGetString1, requestMessage.getMessage());
         System.out.println();
@@ -88,12 +89,12 @@ class ParserTest {
 
     @Test
     void verifyValidGetRequestWithHeaders() {
-        String[] args = {"get", "-h", "Accept:application/json", "-h", "anotherkey:anothervalue",  "'http://httpbin.org/get?course=networking&assignment=1'"};
+        String[] args = {"httpc", "get", "-h", "Accept:application/json", "-h", "anotherkey:anothervalue",  "'http://httpbin.org/get?course=networking&assignment=1'"};
 
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertEquals(expectedGetStringWithParameters, requestMessage.getMessage());
         System.out.println();
@@ -101,13 +102,13 @@ class ParserTest {
 
     @Test
     void verifyValidPostRequest() {
-        String[] args = {"post", "-h", "Content-Type:application/json", "-d", "'{\"Assignment\": 1}'",
+        String[] args = {"httpc", "post", "-h", "Content-Type:application/json", "-d", "'{\"Assignment\": 1}'",
                 "http://httpbin.org/post"};
 
         RequestMessage requestMessage;
         Parser parser = getParser(args);
 
-        requestMessage = parser.getRequest();
+        requestMessage = parser.getRequest(args);
 
         assertEquals(expectedPostRequestString, requestMessage.getMessage());
         System.out.println();
@@ -115,13 +116,13 @@ class ParserTest {
 
     private Parser getParser(String[] args) {
         initializeHelpers(args);
-        Parser parser = new Parser(args, helpRequestParser, getRequestParser, postRequestParser);
+        Parser parser = new Parser(helpRequestParser, getRequestParser, postRequestParser);
         return parser;
     }
 
     private void initializeHelpers(String[] args) {
-        helpRequestParser = new HelpRequestParser(args);
-        getRequestParser = new GetRequestParser(args);
-        postRequestParser = new PostRequestParser(args);
+        helpRequestParser = new HelpRequestParser();
+        getRequestParser = new GetRequestParser();
+        postRequestParser = new PostRequestParser();
     }
 }

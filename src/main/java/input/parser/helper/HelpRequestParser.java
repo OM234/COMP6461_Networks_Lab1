@@ -1,4 +1,4 @@
-package input.helper;
+package input.parser.helper;
 
 import message.RequestMessage;
 
@@ -14,13 +14,13 @@ public class HelpRequestParser implements RequestHelper {
     private final boolean isHelpRequest = true;
     private final boolean isVerbose = false;
 
-    public HelpRequestParser(String[] args) {
-        this.args = args;
+    public HelpRequestParser() {
         request = initialMessage;
     }
 
     @Override
-    public RequestMessage getRequest() {
+    public RequestMessage getRequest(String[] args) {
+        this.args = args;
         if(secondArgumentPresent()) {
             verifySecondArgument();
             setSecondArgument();

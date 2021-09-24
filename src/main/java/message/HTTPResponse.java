@@ -41,6 +41,10 @@ public class HTTPResponse {
     }
 
     public String getHttpResponse() {
-        return httpResponse;
+        return this.httpResponse;
+    }
+
+    public String getFullHTTPResponse() {
+        return this.fullHTTPResponse;
     }
 }

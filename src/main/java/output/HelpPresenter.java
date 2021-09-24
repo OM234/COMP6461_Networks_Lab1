@@ -1,6 +1,6 @@
 package output;
 
-import input.helper.HelpRequestParser;
+import input.parser.helper.HelpRequestParser;
 import message.RequestMessage;
 
 import java.io.IOException;

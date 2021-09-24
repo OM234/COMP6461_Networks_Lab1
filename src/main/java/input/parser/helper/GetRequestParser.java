@@ -1,22 +1,20 @@
-package input.helper;
+package input.parser.helper;
 
-import input.helper.common.HTTPRequestParser;
+import input.parser.helper.common.HTTPRequestParser;
 import message.RequestMessage;
 
 import java.util.Arrays;
 
 public class GetRequestParser extends HTTPRequestParser implements RequestHelper {
 
-    public GetRequestParser(String[] args) {
-        super(args);
-    }
-
     @Override
-    public RequestMessage getRequest() {
+    public RequestMessage getRequest(String[] args) {
+        setArgs(args);
         super.setIsVerbose();
         verifyNoDorFArguments();
         super.initializeHeaders();
         initializeURLString();
+        super.verifyNotHTTPSRequest();
         return createHttpRequestLine();
     }
 

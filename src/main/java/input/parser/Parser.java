@@ -1,38 +1,43 @@
-package input;
+package input.parser;
 
-import input.helper.RequestHelper;
+import input.parser.helper.RequestHelper;
 import message.RequestMessage;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Parser {
+public class Parser implements RequestHelper{
 
-    private final String[] args;
+    private String[] args;
     private final RequestHelper helpRequestParser;
     private final RequestHelper getRequestParser;
     private final RequestHelper postRequestParser;
     private RequestType requestType;
 
-    public Parser(String[] args,
-                  RequestHelper helpRequestParser,
+    public Parser(RequestHelper helpRequestParser,
                   RequestHelper getRequestParser,
                   RequestHelper postRequestParser) {
-        this.args = args;
         this.helpRequestParser = helpRequestParser;
         this.getRequestParser = getRequestParser;
         this.postRequestParser = postRequestParser;
     }
 
-    public RequestMessage getRequest() {
+    @Override
+    public RequestMessage getRequest(String[] args) {
         RequestMessage request;
 
+        setArgs(args);
+        removeHTTPCArg();
         verifyInitialArg();
         setRequestType();
         request = getRequestFromHelperParsers();
 
         return request;
+    }
+
+    private void removeHTTPCArg() {
+        args = Arrays.copyOfRange(args, 1, args.length);
     }
 
     private void verifyInitialArg() {
@@ -71,11 +76,11 @@ public class Parser {
     private RequestMessage getRequestFromHelperParsers() {
         RequestMessage request;
         if(requestType.equals(RequestType.HELP)) {
-            request = helpRequestParser.getRequest();
+            request = helpRequestParser.getRequest(this.args);
         } else if (requestType.equals(RequestType.GET)) {
-            request = getRequestParser.getRequest();
+            request = getRequestParser.getRequest(this.args);
         } else if (requestType.equals(RequestType.POST)) {
-            request = postRequestParser.getRequest();
+            request = postRequestParser.getRequest(this.args);
         } else {
             throw new IllegalArgumentException("no request helper defined");
         }
@@ -84,5 +89,13 @@ public class Parser {
 
     private RequestType getRequestType() {
         return requestType;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    private enum RequestType {
+        GET, POST, HELP
     }
 }

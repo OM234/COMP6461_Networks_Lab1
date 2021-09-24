@@ -1,4 +1,4 @@
-package input.helper;
+package input.parser.helper;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,8 +7,6 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GetRequestParserTest {
 
