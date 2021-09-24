@@ -102,7 +102,7 @@ public abstract class HTTPRequestParser {
     }
 
     protected void addMethodAndHostToRequest(MethodsAccepted method) {
-        requestString += method + " " + URL.getFile() + " HTTP/1.0\n" +
+        requestString += method + " " + URL.getFile() + " HTTP/1.1\n" +
                 "Host: " + URL.getHost() + "\n";
     }
 

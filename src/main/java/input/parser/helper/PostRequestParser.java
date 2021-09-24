@@ -3,6 +3,9 @@ package input.parser.helper;
 import input.parser.helper.common.HTTPRequestParser;
 import message.RequestMessage;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -37,7 +40,24 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
     }
 
     private void setBodyFromFileContents() {
-        //TODO: check if implementation is necessary
+        String filePath = getFilePath();
+        try {
+            tryToSetBodyFromFile(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void tryToSetBodyFromFile(String filePath) throws IOException {
+        this.body = Files.readString(Path.of(filePath));
+    }
+
+    private String getFilePath() {
+        return IntStream.range(0, super.args.length)
+                .filter(getDorFArgumentIndex())
+                .mapToObj(mapDorFArgumentToString())
+                .findAny()
+                .get();
     }
 
     private boolean bodyIsFile() {
@@ -51,17 +71,17 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
 
     private void setBodyFromBodyArgument() {
         IntStream.range(0, super.args.length)
-                .filter(getDArgumentIndex())
-                .mapToObj(mapDArgumentToString())
+                .filter(getDorFArgumentIndex())
+                .mapToObj(mapDorFArgumentToString())
                 .findAny()
                 .ifPresent(initializeBodyFromArgument());
     }
 
-    private IntPredicate getDArgumentIndex() {
+    private IntPredicate getDorFArgumentIndex() {
         return index -> argumentIsDorF(args[index]);
     }
 
-    private IntFunction<String> mapDArgumentToString() {
+    private IntFunction<String> mapDorFArgumentToString() {
         return index -> args[index + 1];
     }
 
