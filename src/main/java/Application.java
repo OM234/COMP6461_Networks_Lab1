@@ -23,8 +23,12 @@ public class Application {
 
     public void start() {
         while(true) {
-            setArgs();
-            handleRequest();
+            try {
+                setArgs();
+                handleRequest();
+            } catch(Exception e) {
+                System.out.println(e);
+            }
         }
     }
 
@@ -53,7 +57,7 @@ public class Application {
 
     private void attemptRedirectIfNeeded(HTTPResponse response) {
         if(redirector.redirectNecessary(response)){
-            System.out.println("***Redirecting***\n\n");
+            System.out.println("\n\n***Redirecting***\n\n");
             String newURL = redirector.getRedirectURL(response);
             setRedirectArg(newURL, response);
             handleRequest();
@@ -61,6 +65,6 @@ public class Application {
     }
 
     private void setRedirectArg(String newURL, HTTPResponse response) {
-        args[response.getURLIndex()] = newURL;
+        args[response.getURLIndex()+1] = newURL;
     }
 }

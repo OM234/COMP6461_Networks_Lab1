@@ -36,6 +36,8 @@ public abstract class HTTPRequestParser {
     protected void setIsVerbose() {
         if (args[1].equalsIgnoreCase("-v")) {
             isVerbose = true;
+        } else {
+            isVerbose = false;
         }
     }
 
