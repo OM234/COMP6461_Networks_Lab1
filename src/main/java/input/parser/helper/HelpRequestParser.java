@@ -14,12 +14,10 @@ public class HelpRequestParser implements RequestHelper {
     private final boolean isHelpRequest = true;
     private final boolean isVerbose = false;
 
-    public HelpRequestParser() {
-        request = initialMessage;
-    }
-
     @Override
     public RequestMessage getRequest(String[] args) {
+        resetInitialArgs();
+
         this.args = args;
         if(secondArgumentPresent()) {
             verifySecondArgument();
@@ -27,6 +25,11 @@ public class HelpRequestParser implements RequestHelper {
         }
         appendSecondArgToRequest();
         return new RequestMessage(isHelpRequest, isVerbose, request, "", -1);
+    }
+
+    private void resetInitialArgs() {
+        request = initialMessage;
+        secondArgument = "";
     }
 
     public void setArgs(String[] args) {
