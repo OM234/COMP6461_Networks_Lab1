@@ -35,7 +35,7 @@ public class HttpClient {
     }
 
     private void connectToHost(SocketChannel socket) throws IOException {
-        socket.connect(new InetSocketAddress(this.request.getHostName(), 80));
+        socket.connect(new InetSocketAddress(this.request.getHostName(), request.getPort()));
     }
 
     private void writeToSocket(SocketChannel socket) throws IOException {

@@ -15,12 +15,13 @@ import java.util.stream.IntStream;
 
 public abstract class HTTPRequestParser {
 
+    protected final boolean isHelpRequest = false;
     protected String[] args;
     protected boolean isVerbose = false;
-    protected final boolean isHelpRequest = false;
     protected Map<String, String> headers = new HashMap<>();
     protected String URLString;
     protected int URLIndex;
+    protected int port;
     protected java.net.URL URL;
     protected String requestString = "";
 
@@ -82,7 +83,7 @@ public abstract class HTTPRequestParser {
 
     protected boolean isURLIndexWithQuotes(int index) {
         try {
-            URL = new URL(args[index].substring(1, args[index].length()-1));
+            URL = new URL(args[index].substring(1, args[index].length() - 1));
         } catch (MalformedURLException e) {
             return false;
         }
@@ -101,6 +102,7 @@ public abstract class HTTPRequestParser {
     protected void tryToInitializeURL() {
         try {
             initializeURL();
+            setPort();
         } catch (MalformedURLException e) {
             handleMalformedURL(e);
         }
@@ -121,13 +123,21 @@ public abstract class HTTPRequestParser {
     }
 
     protected void removeOuterURLQuotes() {
-        if(outerQuotesPresent()) {
+        if (outerQuotesPresent()) {
             this.URLString = this.URLString.substring(1, this.URLString.length() - 1);
         }
     }
 
     private boolean outerQuotesPresent() {
         return URLString.charAt(0) == '\'';
+    }
+
+    protected void setPort() {
+        if(this.URL.getPort() == -1) {
+            this.port = 80;
+        } else {
+            this.port = URL.getPort();
+        }
     }
 
     protected void addMethodAndHostToRequest(MethodsAccepted method) {
@@ -149,14 +159,14 @@ public abstract class HTTPRequestParser {
     protected abstract RequestMessage createHttpRequestLine();
 
     protected void verifyNotHTTPSRequest() {
-        if(urlIsHTTPs()){
+        if (urlIsHTTPs()) {
             throw new IllegalArgumentException("Cannot perform HTTPs connections");
         }
     }
 
     private boolean urlIsHTTPs() {
-        return this.args[args.length-1].charAt(4) == 's' ||
-                this.args[args.length-1].charAt(5) == 's';
+        return this.args[args.length - 1].charAt(4) == 's' ||
+                this.args[args.length - 1].charAt(5) == 's';
     }
 
     protected enum MethodsAccepted {

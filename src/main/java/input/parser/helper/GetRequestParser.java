@@ -30,6 +30,7 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
     private void initializeURLString() {
         getURLFromArgs();
         super.removeOuterURLQuotes();
+        super.setPort();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         super.addHeadersToRequest();
         super.addRequiredNewLineToRequest();
 
-        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.requestString,
+        message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.port, super.requestString,
                 super.URL.getHost(), super.URLIndex);
         return message;
     }
