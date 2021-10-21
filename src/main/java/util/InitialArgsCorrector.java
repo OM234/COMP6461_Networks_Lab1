@@ -9,11 +9,15 @@ public class InitialArgsCorrector {
         List<String> newArgs = new ArrayList<>();
         int i = 0;
         while(i < args.length) {
-            if(args[i].contains("'")) {
+            if(args[i].contains("'") && args[i].lastIndexOf('\'') != args[i].length()-1) {
                 String curr = args[i];
                 i++;
-                while(i < args.length && args[i].contains("'")) {
+                while(i < args.length) {
                     curr += " " + args[i];
+                    if(args[i].contains("'")) {
+                        i++;
+                        break;
+                    }
                     i++;
                 }
                 newArgs.add(curr);

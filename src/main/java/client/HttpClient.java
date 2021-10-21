@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class HttpClient {
 
@@ -26,6 +27,7 @@ public class HttpClient {
 
     private HTTPResponse tryToMakeHTTPRequest(SocketChannel socket) throws IOException {
         connectToHost(socket);
+        confirmProceed();
         writeToSocket(socket);
         return readResponse(socket);
     }
@@ -36,6 +38,12 @@ public class HttpClient {
 
     private void connectToHost(SocketChannel socket) throws IOException {
         socket.connect(new InetSocketAddress(this.request.getHostName(), request.getPort()));
+    }
+
+    private void confirmProceed() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Connected, press any key to proceed...");
+        scanner.nextLine();
     }
 
     private void writeToSocket(SocketChannel socket) throws IOException {
