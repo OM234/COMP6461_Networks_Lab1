@@ -23,7 +23,8 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
         verifyOnlyOneDorFArgument();
         super.initializeHeaders();
         initializeURLString();
-        super.verifyNotHTTPSRequest();
+        super.setIsHttps();
+        super.setPort();
         initializeBody();
         addContentLengthToHeader();
         return createHttpRequestLine();
@@ -128,7 +129,7 @@ public class PostRequestParser extends HTTPRequestParser implements RequestHelpe
         addBodyToRequest();
 
         message = new RequestMessage(super.isHelpRequest, super.isVerbose,  super.port, super.requestString,
-                super.URL.getHost(), super.URLIndex);
+                super.URL.getHost(), super.URLIndex, super.isHTTPs);
         return message;
     }
 

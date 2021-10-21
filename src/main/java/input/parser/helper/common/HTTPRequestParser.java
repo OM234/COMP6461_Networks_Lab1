@@ -24,6 +24,7 @@ public abstract class HTTPRequestParser {
     protected int port;
     protected java.net.URL URL;
     protected String requestString = "";
+    protected boolean isHTTPs;
 
     public void setArgs(String[] args) {
         resetRequestString();
@@ -102,7 +103,6 @@ public abstract class HTTPRequestParser {
     protected void tryToInitializeURL() {
         try {
             initializeURL();
-            setPort();
         } catch (MalformedURLException e) {
             handleMalformedURL(e);
         }
@@ -134,14 +134,18 @@ public abstract class HTTPRequestParser {
 
     protected void setPort() {
         if(this.URL.getPort() == -1) {
-            this.port = 80;
+            if(isHTTPs) {
+                this.port = 443;
+            } else {
+                this.port = 80;
+            }
         } else {
             this.port = URL.getPort();
         }
     }
 
     protected void addMethodAndHostToRequest(MethodsAccepted method) {
-        requestString += method + " " + URL.getFile() + " HTTP/1.1\n" +
+        requestString += method + " " + URL.getFile() + " HTTP/1.0\n" +
                 "Host: " + URL.getHost() + "\n";
     }
 
@@ -158,9 +162,11 @@ public abstract class HTTPRequestParser {
 
     protected abstract RequestMessage createHttpRequestLine();
 
-    protected void verifyNotHTTPSRequest() {
+    protected void setIsHttps() {
         if (urlIsHTTPs()) {
-            throw new IllegalArgumentException("Cannot perform HTTPs connections");
+            isHTTPs = true;
+        } else {
+            isHTTPs = false;
         }
     }
 

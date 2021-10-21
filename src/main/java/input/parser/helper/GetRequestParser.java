@@ -14,7 +14,8 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         verifyNoDorFArguments();
         super.initializeHeaders();
         initializeURLString();
-        super.verifyNotHTTPSRequest();
+        super.setIsHttps();
+        super.setPort();
         return createHttpRequestLine();
     }
 
@@ -30,7 +31,6 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
     private void initializeURLString() {
         getURLFromArgs();
         super.removeOuterURLQuotes();
-        super.setPort();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GetRequestParser extends HTTPRequestParser implements RequestHelper
         super.addRequiredNewLineToRequest();
 
         message = new RequestMessage(super.isHelpRequest, super.isVerbose, super.port, super.requestString,
-                super.URL.getHost(), super.URLIndex);
+                super.URL.getHost(), super.URLIndex, super.isHTTPs);
         return message;
     }
 }

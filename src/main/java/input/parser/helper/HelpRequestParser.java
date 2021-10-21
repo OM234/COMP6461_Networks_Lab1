@@ -24,7 +24,7 @@ public class HelpRequestParser implements RequestHelper {
             setSecondArgument();
         }
         appendSecondArgToRequest();
-        return new RequestMessage(isHelpRequest, isVerbose, -1, request, "", -1);
+        return new RequestMessage(isHelpRequest, isVerbose, -1, request, "", -1, false);
     }
 
     private void resetInitialArgs() {

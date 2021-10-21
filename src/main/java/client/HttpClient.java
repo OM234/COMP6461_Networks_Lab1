@@ -17,8 +17,24 @@ public class HttpClient {
 
     public HTTPResponse makeRequest(RequestMessage request) {
         setRequest(request);
-        try(SocketChannel socket = SocketChannel.open()) {
+        if (request.isHTTPs()) {
+            return handleHttps(request);
+        }
+        try (SocketChannel socket = SocketChannel.open()) {
             return tryToMakeHTTPRequest(socket);
+        } catch (IOException e) {
+            handleHTTPError(e);
+            throw new RuntimeException();
+        }
+    }
+
+    private void setRequest(RequestMessage request) {
+        this.request = request;
+    }
+
+    private HTTPResponse handleHttps(RequestMessage request) {
+        try {
+            return new HttpsClient().makeRequest(request);
         } catch (IOException e) {
             handleHTTPError(e);
             throw new RuntimeException();
@@ -30,10 +46,6 @@ public class HttpClient {
         confirmProceed();
         writeToSocket(socket);
         return readResponse(socket);
-    }
-
-    private void setRequest(RequestMessage request) {
-        this.request = request;
     }
 
     private void connectToHost(SocketChannel socket) throws IOException {
@@ -56,7 +68,7 @@ public class HttpClient {
 
         readFromSocketIntoByteBuffer(socket, bf);
         bytesWithoutNullBytes = removeNullBytes(bf);
-        
+
         return convertByteToHTTPReponseObject(bytesWithoutNullBytes);
     }
 
@@ -75,7 +87,7 @@ public class HttpClient {
     }
 
     private HTTPResponse convertByteToHTTPReponseObject(byte[] bytesWithoutNullBytes) {
-        String response =  new String(bytesWithoutNullBytes);
+        String response = new String(bytesWithoutNullBytes);
         return new HTTPResponse(response, this.request);
     }
 
